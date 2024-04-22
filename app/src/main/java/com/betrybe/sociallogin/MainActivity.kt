@@ -13,8 +13,14 @@ class MainActivity : AppCompatActivity() {
     private val emailInput:TextInputEditText by lazy { findViewById(R.id.email_input) }
     private val emailLayout:TextInputLayout by lazy { findViewById(R.id.email_text_input_layout) }
     private val passwordInput:TextInputEditText by lazy { findViewById(R.id.password_input) }
+    private val passwordLayout:TextInputLayout by lazy { findViewById(R.id.password_text_input_layout) }
     private val loginButton:Button by lazy { findViewById(login_button) }
 
+    private val email: String
+        get() = emailInput.text.toString().trim()
+
+    private val password: String
+        get() = passwordInput.text.toString().trim()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,24 +30,36 @@ class MainActivity : AppCompatActivity() {
         passwordInput.addTextChangedListener { enableButton() }
 
         loginButton.setOnClickListener {
-            val email = emailInput.text.toString()
-            if (isValidEmail(email)) {
-                emailLayout.error = null
-            } else {
-                emailLayout.error = "Email inválido"
-            }
-        }
+            validateFields(email, password)
+    }
+}
+
+    private fun enableButton() {
+        loginButton.isEnabled = email.isNotEmpty() && password.isNotEmpty()
     }
 
     private fun isValidEmail(email: String): Boolean {
-        val emailPattern = "[a-zA-Z0-9.]+@[a-zA-Z]+.[a-zA-Z]+"
+        val emailPattern = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}"
         return email.matches(emailPattern.toRegex())
     }
 
-    private fun enableButton() {
-        val email = emailInput.text.toString().trim()
-        val password = passwordInput.text.toString().trim()
+    private fun validateFields(email: String, password: String): Boolean {
+        var hasError = false
 
-        loginButton.isEnabled = email.isNotEmpty() && password.isNotEmpty()
+        if (!isValidEmail(email)) {
+            emailLayout.error = "Email inválido"
+            hasError = true
+        } else {
+            emailLayout.error = null
+        }
+
+        if (password.length < 4) {
+            passwordLayout.error = "Senha deve ter mais de 4 caracteres"
+            hasError = true
+        } else {
+            passwordLayout.error = null
+        }
+
+        return hasError
     }
-}
+    }
