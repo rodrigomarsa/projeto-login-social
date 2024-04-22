@@ -5,6 +5,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import com.betrybe.sociallogin.R.id.login_button
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity() {
 
         loginButton.setOnClickListener {
             validateFields(email, password)
+            Snackbar.make(findViewById(android.R.id.content), R.string.login_succeeded, Snackbar.LENGTH_SHORT).show()
     }
 }
 
